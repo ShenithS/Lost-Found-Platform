@@ -50,4 +50,21 @@ exports.getItemById = async (req, res) => {
   }
 };
 
+exports.createItem = async (req, res) => {
+  try {
+
+    const newItem = new Item({
+      ...req.body,
+      image: req.file ? req.file.filename : null
+    });
+
+    const savedItem = await newItem.save();
+
+    res.status(201).json(savedItem);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = router;

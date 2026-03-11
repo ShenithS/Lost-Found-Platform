@@ -3,54 +3,103 @@ import API from "../services/api";
 
 function ReportFound() {
 
-  const [formData,setFormData]=useState({
-    title:"",
-    description:"",
-    location:"",
-    date:"",
-    contactName:"",
-    contactEmail:"",
-    contactPhone:""
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    location: "",
+    date: "",
+    contactName: "",
+    contactEmail: "",
+    contactPhone: "",
+    image: null
   });
 
-  const handleChange=(e)=>{
-    setFormData({...formData,[e.target.name]:e.target.value});
+  const handleChange = (e) => {
+
+    if (e.target.name === "image") {
+      setFormData({
+        ...formData,
+        image: e.target.files[0]
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    }
+
   };
 
-  const handleSubmit=async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    await API.post("/items",{...formData,type:"found"});
-    alert("Found item reported");
+
+    try {
+
+      const data = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+
+      data.append("type", "found");
+
+      await API.post("/items", data, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      alert("Found item reported successfully!");
+
+      setFormData({
+        title: "",
+        description: "",
+        location: "",
+        date: "",
+        contactName: "",
+        contactEmail: "",
+        contactPhone: "",
+        image: null
+      });
+
+    } catch (error) {
+
+      console.error(error);
+      alert("Something went wrong");
+
+    }
   };
 
   return (
 
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100 p-6">
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-96"
+        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
 
-        <h2 className="text-2xl font-bold mb-6 text-center">
+        <h2 className="text-2xl font-bold mb-6 text-center text-green-600">
           Report Found Item
         </h2>
 
-        <input name="title" placeholder="Item Name" onChange={handleChange} className="w-full border p-2 mb-3 rounded"/>
+        <input name="title" placeholder="Item Name" value={formData.title} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <textarea name="description" placeholder="Description" onChange={handleChange} className="w-full border p-2 mb-3 rounded"/>
+        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <input name="location" placeholder="Location" onChange={handleChange} className="w-full border p-2 mb-3 rounded"/>
+        <input name="location" placeholder="Location" value={formData.location} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <input type="date" name="date" onChange={handleChange} className="w-full border p-2 mb-3 rounded"/>
+        <input type="date" name="date" value={formData.date} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <input name="contactName" placeholder="Your Name" onChange={handleChange} className="w-full border p-2 mb-3 rounded"/>
+        <input name="contactName" placeholder="Your Name" value={formData.contactName} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <input name="contactEmail" placeholder="Email" onChange={handleChange} className="w-full border p-2 mb-3 rounded"/>
+        <input type="email" name="contactEmail" placeholder="Email" value={formData.contactEmail} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <input name="contactPhone" placeholder="Phone Number" onChange={handleChange} className="w-full border p-2 mb-4 rounded"/>
+        <input name="contactPhone" placeholder="Phone Number" value={formData.contactPhone} onChange={handleChange} required className="w-full border p-2 mb-3 rounded"/>
 
-        <button className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">
+        <input type="file" name="image" onChange={handleChange} className="w-full mb-4"/>
+
+        <button type="submit" className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">
           Submit
         </button>
 
