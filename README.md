@@ -88,3 +88,10 @@ Open your browser → `http://localhost:3000`
 All images are saved in `server/uploads/` folder.
 
 ## 🚀 Deployment Read
+
+1. Frontend → Vercel / Netlify
+2. Backend → Render / Railway
+3. Database → MongoDB Atlas
+4. Images → Switch to Cloudinary (optional)
+
+
