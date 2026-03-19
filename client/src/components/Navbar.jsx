@@ -8,7 +8,6 @@ function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
-
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
@@ -16,92 +15,97 @@ function Navbar() {
     } else {
       setUser(null);
     }
-
   }, [location]);
 
   const handleLogout = () => {
-
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
     setUser(null);
-
     navigate("/");
-
   };
 
   return (
 
-    <nav className="bg-blue-600 text-white shadow-md">
+    <div className="navbar bg-base-100 shadow-md px-6">
 
-      <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-
-        <Link to="/" className="text-xl font-bold">
+      {/* LEFT */}
+      <div className="flex-1">
+        <Link to="/" className="text-2xl font-bold text-primary">
           Lost & Found
         </Link>
+      </div>
 
-        <div className="flex gap-6 items-center">
+      {/* RIGHT */}
+      <div className="flex-none gap-4 items-center">
 
-          <Link to="/" className="hover:text-gray-200">
-            Home
-          </Link>
+        <Link to="/" className="btn btn-ghost text-base">
+          Home
+        </Link>
 
-          <Link to="/browse" className="hover:text-gray-200">
-            Browse
-          </Link>
+        <Link to="/browse" className="btn btn-ghost text-base">
+          Browse
+        </Link>
 
-          {user ? (
+        {user ? (
 
-            <>
-              <Link to="/report-lost" className="hover:text-gray-200">
-                Report Lost
-              </Link>
+          <>
+            <Link to="/report-lost" className="btn btn-ghost text-base">
+              Report Lost
+            </Link>
 
-              <Link to="/report-found" className="hover:text-gray-200">
-                Report Found
-              </Link>
+            <Link to="/report-found" className="btn btn-ghost text-base">
+              Report Found
+            </Link>
 
-              <span className="font-medium">
-                {user.name}
-              </span>
+            {/* USER DROPDOWN */}
+            <div className="dropdown dropdown-end">
 
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
-              >
-                Logout
-              </button>
-            </>
+              <label tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder">
+                <div className="bg-neutral text-neutral-content rounded-full w-10">
+                  <span className="text-lg">
+                    {user.name?.charAt(0)}
+                  </span>
+                </div>
+              </label>
 
-          ) : (
+              <ul className="menu menu-md dropdown-content mt-3 z-[1] p-3 shadow bg-base-100 rounded-box w-56 text-base">
+                <li>
+                  <span className="font-semibold text-lg">{user.name}</span>
+                </li>
 
-            <>
-              <Link to="/login" className="hover:text-gray-200">
-                Login
-              </Link>
+                <li>
+                  <button onClick={handleLogout} className="text-red-500">
+                    Logout
+                  </button>
+                </li>
+              </ul>
 
-              <Link
-                to="/register"
-                className="bg-green-500 px-3 py-1 rounded hover:bg-green-600"
-              >
-                Register
-              </Link>
+            </div>
 
-              <Link
-                to="/admin-login"
-                className="bg-black text-white px-6 py-2 rounded hover:bg-gray-900"
-              >
-                Admin Panel
-              </Link>             
-            </>
+          </>
 
-          )}
+        ) : (
 
-        </div>
+          <>
+            <Link to="/login" className="btn btn-outline text-base px-4">
+              Login
+            </Link>
+
+            <Link to="/register" className="btn btn-primary text-base px-4">
+              Register
+            </Link>
+
+            <Link to="/admin-login" className="btn btn-neutral text-base px-4">
+              Admin
+            </Link>
+          </>
+
+        )}
 
       </div>
 
-    </nav>
+    </div>
+
   );
 }
 

@@ -1,91 +1,91 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import Alert from "../components/Alert"; // <-- import the Alert component
 
-function Login(){
-
-  const [formData,setFormData]=useState({
-    email:"",
-    password:""
-  });
-
-  const [loading,setLoading] = useState(false);
-
+function Login() {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({ message: "", type: "" }); // <-- state for alerts
   const navigate = useNavigate();
 
-  const handleChange=(e)=>{
-    setFormData({...formData,[e.target.name]:e.target.value});
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit=async(e)=>{
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      const res = await API.post("/auth/login", formData);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      const res = await API.post("/auth/login",formData);
+      setAlert({ message: "Login successful ✅", type: "success" });
 
-      localStorage.setItem("token",res.data.token);
-      localStorage.setItem("user",JSON.stringify(res.data.user));
-
-      alert("Login successful");
-
-      navigate("/");
-
-    } catch(error){
-
+      setTimeout(() => navigate("/"), 1500); // redirect after 1.5s
+    } catch (error) {
       console.error(error);
-      alert("Invalid email or password");
-
+      setAlert({ message: "Invalid email or password ❌", type: "error" });
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
-  return(
+  return (
+    <div className="min-h-screen flex justify-center items-center bg-gray-800 p-6">
+      <div className="w-full max-w-md space-y-6">
+        {/* Display Alert if message exists */}
+        {alert.message && (
+          <Alert
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert({ message: "", type: "" })}
+            duration={4000}
+          />
+        )}
 
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow w-96">
-
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Login
-        </h2>
-
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          required
-          className="w-full border p-2 mb-3 rounded"
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-          required
-          className="w-full border p-2 mb-4 rounded"
-        />
-
-        <button
-          disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        <form
+          onSubmit={handleSubmit}
+          className="bg-gray-200 p-10 rounded-2xl shadow-lg w-full space-y-6"
         >
-          {loading ? "Logging in..." : "Login"}
-        </button>
+          <h2 className="text-3xl font-bold text-center text-blue-600">Login</h2>
+          <p className="text-gray-600 text-center mb-6">
+            Enter your credentials to access your account
+          </p>
 
-      </form>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="input input-bordered w-full bg-white"
+          />
 
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="input input-bordered w-full bg-white"
+          />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-500 text-white py-3 rounded-xl hover:bg-blue-600 hover:scale-105 transition transform font-semibold"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+      </div>
     </div>
-
   );
-
 }
 
 export default Login;

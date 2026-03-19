@@ -1,111 +1,87 @@
 import { useState } from "react";
 import API from "../services/api";
+import Alert from "../components/Alert"; // Import your Alert component
 
 function Register() {
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [alert, setAlert] = useState({ message: "", type: "" });
 
-  const [formData, setFormData] = useState({
-    name:"",
-    email:"",
-    password:""
-  });
-
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-
-  const handleChange = (e)=>{
-    setFormData({...formData,[e.target.name]:e.target.value});
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async(e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setErrorMsg("");
-    setSuccessMsg("");
+    setAlert({ message: "", type: "" });
 
     try {
+      await API.post("/auth/register", formData);
+      setAlert({ message: "Registered successfully ✅", type: "success" });
 
-      await API.post("/auth/register",formData);
-
-      setSuccessMsg("Registered successfully ✅");
-
-      // reset form
-      setFormData({
-        name:"",
-        email:"",
-        password:""
-      });
-
+      setFormData({ name: "", email: "", password: "" });
     } catch (error) {
-
-      setErrorMsg(
-        error.response?.data?.message || "Something went wrong"
-      );
-
+      setAlert({ message: error.response?.data?.message || "Something went wrong ❌", type: "error" });
     }
   };
 
-  return(
-
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow w-96">
-
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Register
-        </h2>
-
-        {/* ✅ Error Message */}
-        {errorMsg && (
-          <p className="text-red-500 text-sm mb-3 text-center">
-            {errorMsg}
-          </p>
+  return (
+    <div className="min-h-screen flex justify-center items-center bg-gray-800 p-6">
+      <div className="w-full max-w-md space-y-6">
+        {/* Display Alert if message exists */}
+        {alert.message && (
+          <Alert
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert({ message: "", type: "" })}
+            duration={4000}
+          />
         )}
 
-        {/* ✅ Success Message */}
-        {successMsg && (
-          <p className="text-green-500 text-sm mb-3 text-center">
-            {successMsg}
-          </p>
-        )}
+        <form
+          className="bg-gray-200 p-10 rounded-2xl shadow-lg w-full space-y-6"
+          onSubmit={handleSubmit}
+        >
+          <h2 className="text-3xl font-bold text-center text-blue-600">Register</h2>
+          <p className="text-gray-600 text-center mb-4">Create your account to get started</p>
 
-        <input
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 mb-3 rounded"
-        />
+          <input
+            name="name"
+            placeholder="Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="input input-bordered w-full bg-white"
+          />
 
-        <input
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 mb-3 rounded"
-        />
+          <input
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="input input-bordered w-full bg-white"
+          />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          className="w-full border p-2 mb-4 rounded"
-        />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="input input-bordered w-full bg-white"
+          />
 
-        <button className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-          Register
-        </button>
-
-      </form>
-
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-3 rounded-xl hover:bg-blue-600 hover:scale-105 transition transform font-semibold"
+          >
+            Register
+          </button>
+        </form>
+      </div>
     </div>
-
   );
-
 }
 
 export default Register;

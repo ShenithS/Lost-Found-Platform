@@ -30,47 +30,97 @@ function BrowseItems() {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-800 py-10 px-4">
 
-      <h2 className="text-3xl font-bold mb-6 text-center">
-        Browse Items
-      </h2>
+      <div className="max-w-6xl mx-auto">
 
-      {/* SEARCH */}
-      <div className="flex justify-center mb-6">
-        <input
-          type="text"
-          placeholder="Search items..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md p-2 border rounded"
-        />
-      </div>
-
-      {/* FILTER */}
-      <div className="flex justify-center gap-4 mb-6">
-        <button onClick={() => setFilter("all")} className={`px-4 py-2 rounded ${filter==="all"?"bg-blue-600 text-white":"bg-gray-200"}`}>All</button>
-        <button onClick={() => setFilter("lost")} className={`px-4 py-2 rounded ${filter==="lost"?"bg-red-500 text-white":"bg-gray-200"}`}>Lost</button>
-        <button onClick={() => setFilter("found")} className={`px-4 py-2 rounded ${filter==="found"?"bg-green-500 text-white":"bg-gray-200"}`}>Found</button>
-      </div>
-
-      {filteredItems.length === 0 ? (
-
-        <p className="text-center text-gray-500">
-          No matching items found
-        </p>
-
-      ) : (
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredItems.map(item => (
-            <ItemCard key={item._id} item={item} />
-          ))}
+        {/* HEADER */}
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold mb-2">
+            Browse Items
+          </h2>
+          <p className="text-gray-500">
+            Find lost or found items easily
+          </p>
         </div>
 
-      )}
+        {/* SEARCH */}
+        <div className="flex justify-center mb-6">
+          <input
+            type="text"
+            placeholder="🔍 Search by title or location..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="input input-bordered w-full max-w-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        {/* FILTER */}
+        <div className="flex justify-center gap-3 mb-8 flex-wrap">
+
+          <button
+            onClick={() => setFilter("all")}
+            className={`btn rounded-full px-6 ${
+              filter === "all"
+                ? "btn-primary"
+                : "btn-outline"
+            }`}
+          >
+            All
+          </button>
+
+          <button
+            onClick={() => setFilter("lost")}
+            className={`btn rounded-full px-6 ${
+              filter === "lost"
+                ? "bg-red-500 text-white"
+                : "btn-outline"
+            }`}
+          >
+            Lost
+          </button>
+
+          <button
+            onClick={() => setFilter("found")}
+            className={`btn rounded-full px-6 ${
+              filter === "found"
+                ? "bg-green-500 text-white"
+                : "btn-outline"
+            }`}
+          >
+            Found
+          </button>
+
+        </div>
+
+        {/* RESULTS */}
+        {filteredItems.length === 0 ? (
+
+          <div className="text-center mt-16">
+            <h3 className="text-xl font-semibold text-gray-600">
+              No matching items found 😕
+            </h3>
+            <p className="text-gray-400 mt-2">
+              Try changing filters or search keywords
+            </p>
+          </div>
+
+        ) : (
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            {filteredItems.map(item => (
+              <ItemCard key={item._id} item={item} />
+            ))}
+
+          </div>
+
+        )}
+
+      </div>
 
     </div>
+
   );
 }
 

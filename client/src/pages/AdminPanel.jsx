@@ -1,48 +1,54 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
 
-function AdminPanel(){
+function AdminPanel() {
+  const [items, setItems] = useState([]);
 
-  const [items,setItems]=useState([]);
-
-  useEffect(()=>{
-    const fetchItems = async ()=>{
+  useEffect(() => {
+    const fetchItems = async () => {
       const res = await API.get("/items");
       setItems(res.data);
     };
     fetchItems();
-  },[]);
+  }, []);
 
-  const deleteItem = async(id)=>{
+  const deleteItem = async (id) => {
     await API.delete(`/items/${id}`);
-    setItems(items.filter(item=>item._id !== id));
+    setItems(items.filter((item) => item._id !== id));
   };
 
-  return(
-
-    <div className="p-8">
-
-      <h1 className="text-2xl font-bold mb-6">
+  return (
+    <div className="min-h-screen bg-gray-800 p-8">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray">
         Admin Panel
       </h1>
 
-      {items.map(item=>(
-        <div key={item._id} className="border p-4 mb-3 rounded">
-
-          <h3 className="font-semibold">{item.title}</h3>
-
-          <p>{item.location}</p>
-
-          <button
-            onClick={()=>deleteItem(item._id)}
-            className="bg-red-500 text-white px-3 py-1 mt-2 rounded"
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map((item) => (
+          <div
+            key={item._id}
+            className="bg-gray-200 p-6 rounded-2xl shadow-lg flex flex-col justify-between"
           >
-            Delete
-          </button>
+            <div>
+              <h3 className="text-xl text-gray-700 font-semibold mb-2">{item.title}</h3>
+              <p className="text-gray-700 mb-4">{item.location}</p>
+            </div>
 
-        </div>
-      ))}
+            <button
+              onClick={() => deleteItem(item._id)}
+              className="bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 hover:scale-105 transition transform font-semibold"
+            >
+              Delete
+            </button>
+          </div>
+        ))}
 
+        {items.length === 0 && (
+          <p className="text-gray-600 col-span-full text-center mt-6">
+            No items found
+          </p>
+        )}
+      </div>
     </div>
   );
 }

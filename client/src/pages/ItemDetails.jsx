@@ -12,14 +12,10 @@ function ItemDetails() {
     const fetchItem = async () => {
 
       try {
-
         const res = await API.get(`/items/${id}`);
         setItem(res.data);
-
       } catch (error) {
-
         console.error("Error fetching item:", error);
-
       }
 
     };
@@ -28,61 +24,104 @@ function ItemDetails() {
 
   }, [id]);
 
-  if (!item)
+  if (!item) {
     return (
-      <p className="text-center mt-20 text-gray-500">
-        Loading item details...
-      </p>
+      <div className="flex justify-center items-center min-h-screen">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
     );
+  }
 
   return (
 
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
+    <div className="min-h-screen bg-gray-800 flex justify-center items-center p-6">
 
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div className="card bg-base-100 shadow-xl w-full max-w-2xl">
 
-        {item.image && (
+        {/* IMAGE */}
+        <figure className="w-full h-48 overflow-hidden rounded-t-2xl flex items-center justify-center bg-gray-100">
           <img
-            src={`http://localhost:5000/uploads/${item.image}`}
+            src={
+              item.image
+                ? `http://localhost:5000/uploads/${item.image}`
+                : "https://via.placeholder.com/500x300?text=No+Image"
+            }
             alt={item.title}
-            className="w-full h-60 object-cover rounded mb-4"
+            className="max-h-full max-w-full object-contain"
           />
-        )}
+        </figure>
 
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          {item.title}
-        </h2>
+        {/* BODY */}
+        <div className="card-body">
 
-        <p className="text-gray-700 mb-4">
-          {item.description}
-        </p>
+          {/* TITLE */}
+          <h2 className="card-title text-2xl">
+            {item.title}
+          </h2>
 
-        <div className="space-y-2 text-gray-600">
+          {/* TYPE BADGE */}
+          <div>
+            <span
+              className={`badge ${
+                item.type === "lost"
+                  ? "badge-error"
+                  : "badge-success"
+              }`}
+            >
+              {item.type}
+            </span>
+          </div>
 
-          <p>
-            <span className="font-semibold">Location:</span> {item.location}
+          {/* DESCRIPTION */}
+          <p className="text-gray-600 mt-2">
+            {item.description}
           </p>
 
-          <p>
-            <span className="font-semibold">Date:</span>{" "}
-            {new Date(item.date).toLocaleDateString()}
-          </p>
+          {/* DETAILS */}
+          <div className="mt-4 space-y-2 text-gray-700">
 
-          <p>
-            <span className="font-semibold">Type:</span> {item.type}
-          </p>
+            <p>
+              📍 <span className="font-semibold">Location:</span> {item.location}
+            </p>
 
-        </div>
+            <p>
+              📅 <span className="font-semibold">Date:</span>{" "}
+              {new Date(item.date).toLocaleDateString()}
+            </p>
 
-        <div className="mt-6 border-t pt-4">
+          </div>
 
-          <h3 className="font-semibold mb-2 text-lg">
-            Contact Information
-          </h3>
+          {/* CONTACT */}
+          <div className="mt-6 border-t pt-4">
 
-          <p>{item.contactName}</p>
-          <p>{item.contactEmail}</p>
-          <p>{item.contactPhone}</p>
+            <h3 className="font-semibold text-lg mb-2">
+              Contact Information
+            </h3>
+
+            <p>👤 {item.contactName}</p>
+            <p>📧 {item.contactEmail}</p>
+            <p>📞 {item.contactPhone}</p>
+
+          </div>
+
+          {/* ACTIONS */}
+          <div className="card-actions justify-end mt-4">
+
+            <a
+              href={`tel:${item.contactPhone}`}
+              className="btn btn-success btn-sm"
+            >
+              Call
+            </a>
+
+            <a
+              href={`mailto:${item.contactEmail}`}
+              className="btn btn-outline btn-sm"
+            >
+              Email
+            </a>
+
+          </div>
 
         </div>
 
