@@ -11,6 +11,9 @@ import ItemDetails from "./pages/ItemDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Auth from "./pages/Auth";
+import AdminLogin from "./pages/AdminLogin";
+import AdminPanel from "./pages/AdminPanel";
+import AdminRoute from "./components/AdminRoute";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -24,6 +27,7 @@ function App() {
 
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/register" element={<Register />} />
 
         <Route path="/" element={<Home />} />
@@ -45,6 +49,15 @@ function App() {
             <ProtectedRoute>
               <ReportFound />
             </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminPanel />
+            </AdminRoute>
           }
         />
 

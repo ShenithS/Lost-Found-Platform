@@ -86,6 +86,13 @@ function Navbar() {
               >
                 Register
               </Link>
+
+              <Link
+                to="/admin-login"
+                className="bg-black text-white px-6 py-2 rounded hover:bg-gray-900"
+              >
+                Admin Panel
+              </Link>             
             </>
 
           )}

@@ -6,6 +6,7 @@ const {
   getItems,
   getItemById
 } = require("../controllers/itemController");
+
 const Item = require("../models/Item");
 
 router.post("/items", createItem);

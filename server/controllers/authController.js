@@ -2,8 +2,6 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const SECRET = "mysecretkey";
-
 /* REGISTER */
 
 exports.register = async (req, res) => {
@@ -23,7 +21,8 @@ exports.register = async (req, res) => {
     const user = new User({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role: "user" // default role
     });
 
     await user.save();
@@ -46,6 +45,30 @@ exports.login = async (req, res) => {
 
     const { email, password } = req.body;
 
+    /* 🔥 ADMIN LOGIN (from .env) */
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+
+      const token = jwt.sign(
+        { role: "admin" },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      return res.json({
+        token,
+        user: {
+          name: "Admin",
+          email,
+          role: "admin"
+        }
+      });
+    }
+
+    /* 🔽 NORMAL USER LOGIN */
+
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -60,7 +83,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign(
       { id: user._id },
-      SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
@@ -69,7 +92,8 @@ exports.login = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role || "user"
       }
     });
 

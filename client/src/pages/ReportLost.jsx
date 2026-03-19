@@ -10,14 +10,24 @@ function ReportLost() {
     date: "",
     contactName: "",
     contactEmail: "",
-    contactPhone: ""
+    contactPhone: "",
+    image: null // ✅ added
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+
+    if (e.target.name === "image") {
+      setFormData({
+        ...formData,
+        image: e.target.files[0]
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    }
+
   };
 
   const handleSubmit = async (e) => {
@@ -25,9 +35,18 @@ function ReportLost() {
 
     try {
 
-      await API.post("/items", {
-        ...formData,
-        type: "lost"
+      const data = new FormData();
+
+      Object.keys(formData).forEach((key) => {
+        data.append(key, formData[key]);
+      });
+
+      data.append("type", "lost");
+
+      await API.post("/items", data, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
       });
 
       alert("Lost item reported successfully!");
@@ -40,7 +59,8 @@ function ReportLost() {
         date: "",
         contactName: "",
         contactEmail: "",
-        contactPhone: ""
+        contactPhone: "",
+        image: null
       });
 
     } catch (error) {
@@ -125,7 +145,15 @@ function ReportLost() {
           value={formData.contactPhone}
           onChange={handleChange}
           required
-          className="w-full border p-2 mb-4 rounded"
+          className="w-full border p-2 mb-3 rounded"
+        />
+
+        {/* ✅ IMAGE INPUT */}
+        <input
+          type="file"
+          name="image"
+          onChange={handleChange}
+          className="w-full mb-4"
         />
 
         <button
