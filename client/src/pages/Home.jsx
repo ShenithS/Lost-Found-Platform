@@ -47,52 +47,54 @@ function Home() {
 
   return (
 
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-800 p-6">
 
       {/* HERO */}
       {!user && (
-        <div className="text-center mb-12">
+        <div className="hero bg-base-100 rounded-xl shadow mb-10">
 
-          <h1 className="text-4xl font-bold text-blue-600 mb-3">
-            Lost & Found Platform
-          </h1>
+          <div className="hero-content text-center py-12">
 
-          <p className="text-gray-600">
-            Report lost items or help return found items quickly.
-          </p>
+            <div className="max-w-md">
 
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
+              <h1 className="text-4xl font-bold text-primary">
+                Lost & Found Platform
+              </h1>
 
-            <Link to="/auth" className="bg-blue-600 text-white px-6 py-2 rounded">
-              Get Started
-            </Link>
+              <p className="py-4 text-gray-600">
+                Report lost items or help return found items quickly.
+              </p>
 
-            <Link to="/browse" className="bg-gray-700 text-white px-6 py-2 rounded">
-              Browse Items
-            </Link>
+              <div className="flex justify-center gap-4 mt-4">
 
+                <Link to="/auth" className="btn btn-primary">
+                  Get Started
+                </Link>
 
+                <Link to="/browse" className="btn btn-outline">
+                  Browse Items
+                </Link>
+
+              </div>
+
+            </div>
 
           </div>
 
         </div>
       )}
 
-      {/* USER VIEW */}
+      {/* USER SECTION */}
       {user && (
-        <div className="text-center mb-6">
+        <div className="text-center mb-8">
 
-          <h2 className="text-xl mb-3">
+          <h2 className="text-xl font-semibold mb-2">
             Welcome, {user.name} 👋
           </h2>
 
-
           {user.role === "admin" && (
-            <Link
-              to="/admin"
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-            >
-              Go to Admin Dashboard
+            <Link to="/admin" className="btn btn-secondary btn-sm">
+              Admin Dashboard
             </Link>
           )}
 
@@ -103,27 +105,52 @@ function Home() {
       <div className="flex justify-center mb-6">
         <input
           type="text"
-          placeholder="Search items..."
+          placeholder="🔍 Search items by name or location..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-md p-2 border rounded"
+          className="input input-bordered w-full max-w-md"
         />
       </div>
 
       {/* FILTER */}
-      <div className="flex justify-center gap-4 mb-6">
-        <button onClick={() => setFilter("all")} className={`px-4 py-2 rounded ${filter==="all"?"bg-blue-600 text-white":"bg-gray-200"}`}>All</button>
-        <button onClick={() => setFilter("lost")} className={`px-4 py-2 rounded ${filter==="lost"?"bg-red-500 text-white":"bg-gray-200"}`}>Lost</button>
-        <button onClick={() => setFilter("found")} className={`px-4 py-2 rounded ${filter==="found"?"bg-green-500 text-white":"bg-gray-200"}`}>Found</button>
+      <div className="flex justify-center mb-6">
+        <div className="join">
+
+          <button
+            onClick={() => setFilter("all")}
+            className={`btn join-item ${filter==="all"?"btn-primary":"btn-outline"}`}
+          >
+            All
+          </button>
+
+          <button
+            onClick={() => setFilter("lost")}
+            className={`btn join-item ${filter==="lost"?"btn-error":"btn-outline"}`}
+          >
+            Lost
+          </button>
+
+          <button
+            onClick={() => setFilter("found")}
+            className={`btn join-item ${filter==="found"?"btn-success":"btn-outline"}`}
+          >
+            Found
+          </button>
+
+        </div>
       </div>
 
+      {/* TITLE */}
       <h2 className="text-2xl font-bold mb-6 text-center">
         Latest Items
       </h2>
 
+      {/* CONTENT */}
       {loading ? (
 
-        <p className="text-center">Loading...</p>
+        <div className="flex justify-center">
+          <span className="loading loading-spinner loading-lg text-primary"></span>
+        </div>
 
       ) : filteredItems.length === 0 ? (
 
@@ -133,7 +160,7 @@ function Home() {
 
       ) : (
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map(item => (
             <ItemCard key={item._id} item={item} />
           ))}
